@@ -1,0 +1,6 @@
+{
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/", "destination": "/journey-map.html" }
+  ]
+}
