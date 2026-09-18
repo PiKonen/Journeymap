@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eCom Customer Journey Map</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="header">
+  <h1>eCom Customer Journey Map</h1>
+  <p>Click any pain point or opportunity to see what it means and how it was measured. Cards marked 🔧 have work underway.</p>
+</div>
+
+<div class="journey-container">
+  <div id="journey-mount"></div>
+</div>
+
+<!-- Card detail modal. Populated from the card data on open. -->
+<div id="card-modal" class="modal">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
+    <div class="modal-header">
+      <div class="modal-heading">
+        <span class="card-kind" id="card-modal-kind"></span>
+        <h2 class="modal-title" id="card-modal-title"></h2>
+        <div class="modal-meta" id="card-modal-meta"></div>
+      </div>
+      <button type="button" class="modal-close" id="card-modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="initiative-info" id="card-modal-body"></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-title">How to Use This Map</div>
+  <p class="legend-note">
+    Every pain point and opportunity opens a definition and the evidence behind
+    it — what the item actually means, and how it was measured, whether that was
+    analytics, session replays, usability testing or support-ticket tagging. Each
+    card states its own basis, so you can tell a well-evidenced problem from an
+    assumption before deciding what to fund.
+  </p>
+  <div class="legend-items">
+    <div class="legend-item">
+      <span>🔧</span>
+      <span>Work is underway — the card carries its Jira ticket, owner, timeline and expected impact</span>
+    </div>
+    <div class="legend-item">
+      <span>🔵</span>
+      <span>In Progress — actively being built, team assigned</span>
+    </div>
+    <div class="legend-item">
+      <span>🟡</span>
+      <span>Planned — scheduled to start soon</span>
+    </div>
+    <div class="legend-item">
+      <span>✅</span>
+      <span>Launching Soon — ready or launching within a week</span>
+    </div>
+    <div class="legend-item">
+      <span>⬆️ ➡️ ⬇️</span>
+      <span>Priority — high, medium or low, shown on every card</span>
+    </div>
+  </div>
+
+  <div class="legend-title" style="margin-top: 18px;">Reading the GA Trends</div>
+  <p class="legend-note">
+    Each figure carries its movement against the previous four-week average. The
+    arrow shows which way the number went; the colour shows whether that is good
+    or bad news — so a falling bounce rate is green, while rising support contacts
+    are red. Hover any indicator for the exact change.
+  </p>
+  <div class="legend-items">
+    <div class="legend-item">
+      <span class="trend up good"><span class="trend-arrow" aria-hidden="true">▲</span>1.8pp</span>
+      <span>Rising, and that's an improvement</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend up bad"><span class="trend-arrow" aria-hidden="true">▲</span>4.1pp</span>
+      <span>Rising, and that's a problem</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend down good"><span class="trend-arrow" aria-hidden="true">▼</span>0.9pp</span>
+      <span>Falling, and that's an improvement</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend down bad"><span class="trend-arrow" aria-hidden="true">▼</span>3.2pp</span>
+      <span>Falling, and that's a problem</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend flat neutral"><span class="trend-arrow" aria-hidden="true">–</span>flat</span>
+      <span>Holding steady within normal week-to-week noise</span>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "journeymap",
+  "version": "1.0.0",
+  "description": "Interactive eCommerce customer journey map with evidence and GA trends",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "python3 -m http.server -d src 8000"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

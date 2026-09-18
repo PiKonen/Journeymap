@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+*.log
+
+# Local verification scratch
+build-check.png
+verify_build.js
+_preview.html

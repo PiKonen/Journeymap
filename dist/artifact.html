@@ -1,0 +1,2303 @@
+<title>eCom Customer Journey Map</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #f5f3f0;
+  --border: #e8e4e0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6b6b;
+  --accent: #2563eb;
+
+  --feeling-happy: #10b981;
+  --feeling-neutral: #f59e0b;
+  --feeling-frustrated: #ef4444;
+
+  --pain-bg: #fef2f2;
+  --opportunity-bg: #f0fdf4;
+  --initiative-bg: #fef3c7;
+
+  --trend-good-fg: #065f46;
+  --trend-good-bg: rgba(16, 185, 129, 0.12);
+  --trend-bad-fg: #b91c1c;
+  --trend-bad-bg: rgba(239, 68, 68, 0.12);
+  --trend-flat-fg: #5a5a5a;
+  --trend-flat-bg: rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --border: #333333;
+    --text-primary: #f5f5f5;
+    --text-secondary: #a0a0a0;
+    --accent: #3b82f6;
+    --pain-bg: #7f1d1d;
+    --opportunity-bg: #064e3b;
+    --initiative-bg: #78350f;
+
+    --trend-good-fg: #34d399;
+    --trend-good-bg: rgba(16, 185, 129, 0.18);
+    --trend-bad-fg: #f87171;
+    --trend-bad-bg: rgba(239, 68, 68, 0.18);
+    --trend-flat-fg: #a0a0a0;
+    --trend-flat-bg: rgba(255, 255, 255, 0.08);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --border: #333333;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a0a0a0;
+  --accent: #3b82f6;
+  --pain-bg: #7f1d1d;
+  --opportunity-bg: #064e3b;
+  --initiative-bg: #78350f;
+
+  --trend-good-fg: #34d399;
+  --trend-good-bg: rgba(16, 185, 129, 0.18);
+  --trend-bad-fg: #f87171;
+  --trend-bad-bg: rgba(239, 68, 68, 0.18);
+  --trend-flat-fg: #a0a0a0;
+  --trend-flat-bg: rgba(255, 255, 255, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 16px;
+  line-height: 1.5;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.journey-container {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-bottom: 24px;
+}
+
+.journey-grid {
+  display: inline-grid;
+  grid-template-columns: repeat(8, 280px);
+  grid-auto-rows: max-content;
+  gap: 0;
+  padding: 0;
+  min-width: 100%;
+}
+
+.stage-header,
+.swimlane {
+  border-right: 1px solid var(--border);
+}
+
+.journey-grid > :nth-child(8n) {
+  border-right: none;
+}
+
+.feeling-journey-row {
+  grid-column: 1 / -1;
+}
+
+.stage-header {
+  background: var(--accent);
+  color: white;
+  padding: 16px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.stage-header.excellent { background: #059669; }
+.stage-header.good { background: #3b82f6; }
+.stage-header.caution { background: #f59e0b; color: #1a1a1a; }
+.stage-header.critical { background: #ef4444; }
+
+.performance-indicator {
+  font-size: 10px;
+  opacity: 0.8;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.swimlane {
+  border-bottom: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: auto;
+}
+
+.swimlane:last-child {
+  border-bottom: none;
+}
+
+.swimlane-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.swimlane-note {
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.75;
+}
+
+.feeling {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.feeling-emoji { font-size: 18px; }
+.feeling.happy { color: var(--feeling-happy); }
+.feeling.neutral { color: var(--feeling-neutral); }
+.feeling.frustrated { color: var(--feeling-frustrated); }
+
+.pain-points-container,
+.opportunities-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pain-point,
+.opportunity {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pain-point {
+  font-size: 12px;
+  line-height: 1.3;
+  padding: 8px;
+  border-radius: 4px;
+  background: var(--pain-bg);
+  color: var(--text-primary);
+  border-left: 3px solid var(--feeling-frustrated);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pain-point:hover {
+  transform: translateX(2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pain-point.has-initiative {
+  background: var(--initiative-bg);
+  border-left-color: #f59e0b;
+}
+
+.initiative-badge {
+  font-size: 14px;
+  cursor: pointer;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.opportunity {
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px;
+  border-radius: 4px;
+  background: var(--opportunity-bg);
+  color: var(--text-primary);
+  border-left: 3px solid var(--feeling-happy);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.opportunity:hover {
+  transform: translateX(2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.opportunity.has-initiative {
+  border-left-color: #f59e0b;
+}
+
+.pain-point:focus-visible,
+.opportunity:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.card-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.priority-badge:hover {
+  opacity: 1;
+}
+
+.priority-high {
+  /* High priority - up arrow */
+}
+
+.priority-medium {
+  /* Medium priority - right arrow */
+}
+
+.priority-low {
+  /* Low priority - down arrow */
+}
+
+.metrics {
+  background: rgba(0,0,0,0.02);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+}
+
+.metric-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.metric-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.metric-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  text-transform: none;
+}
+
+/* Trend indicator: the arrow shows which way the number moved over the last
+   four weeks; the colour shows whether that movement is good or bad news. */
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 46px;
+  justify-content: flex-end;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.trend-arrow {
+  font-size: 8px;
+  line-height: 1;
+}
+
+.trend.good {
+  color: var(--trend-good-fg);
+  background: var(--trend-good-bg);
+}
+
+.trend.bad {
+  color: var(--trend-bad-fg);
+  background: var(--trend-bad-bg);
+}
+
+.trend.neutral {
+  color: var(--trend-flat-fg);
+  background: var(--trend-flat-bg);
+}
+
+.metric-value.excellent {
+  color: #059669;
+}
+
+.metric-value.good {
+  color: #3b82f6;
+}
+
+.metric-value.caution {
+  color: #f59e0b;
+}
+
+.metric-value.critical {
+  color: #ef4444;
+}
+
+.modal-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ticket-key {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.ticket-key:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.ticket-key:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ticket-key-system {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  opacity: 0.7;
+}
+
+.ticket-key-id {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.ticket-key.copied {
+  border-color: var(--feeling-happy);
+  color: var(--feeling-happy);
+}
+
+.card-kind {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.card-kind.pain {
+  background: var(--trend-bad-bg);
+  color: var(--trend-bad-fg);
+}
+
+.card-kind.opportunity {
+  background: var(--trend-good-bg);
+  color: var(--trend-good-fg);
+}
+
+.modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.modal-meta-sep {
+  opacity: 0.5;
+}
+
+.initiative-block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.initiative-block-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.no-initiative {
+  color: var(--text-secondary);
+}
+
+.status-badge.in-progress { background: #0284c7; }
+.status-badge.planned { background: #b45309; }
+.status-badge.launching { background: #047857; }
+
+/* MODAL STYLES */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  animation: fadeIn 0.2s;
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: var(--bg);
+  padding: 32px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: slideIn 0.3s;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+  color: var(--text-primary);
+}
+
+.initiative-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.info-value {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #0284c7;
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #0284c7;
+  border-radius: 4px;
+}
+
+.impact-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.impact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.impact-current {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.impact-projected {
+  font-size: 16px;
+  font-weight: 700;
+  color: #059669;
+}
+
+.legend {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.legend-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.legend-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.legend-note {
+  margin: 0 0 12px 0;
+  max-width: 62ch;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Feeling Journey Row - spans all columns */
+.feeling-journey-row {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  background: rgba(59, 130, 246, 0.03);
+  display: block;
+}
+
+.feeling-journey-row svg {
+  display: block;
+  width: 100%;
+  height: 140px;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 24px;
+  }
+}
+
+/* Stage action description, rendered from the stage data. */
+.action-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+</style>
+
+<div class="header">
+  <h1>eCom Customer Journey Map</h1>
+  <p>Click any pain point or opportunity to see what it means and how it was measured. Cards marked 🔧 have work underway.</p>
+</div>
+
+<div class="journey-container">
+  <div id="journey-mount"></div>
+</div>
+
+<!-- Card detail modal. Populated from the card data on open. -->
+<div id="card-modal" class="modal">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
+    <div class="modal-header">
+      <div class="modal-heading">
+        <span class="card-kind" id="card-modal-kind"></span>
+        <h2 class="modal-title" id="card-modal-title"></h2>
+        <div class="modal-meta" id="card-modal-meta"></div>
+      </div>
+      <button type="button" class="modal-close" id="card-modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="initiative-info" id="card-modal-body"></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-title">How to Use This Map</div>
+  <p class="legend-note">
+    Every pain point and opportunity opens a definition and the evidence behind
+    it — what the item actually means, and how it was measured, whether that was
+    analytics, session replays, usability testing or support-ticket tagging. Each
+    card states its own basis, so you can tell a well-evidenced problem from an
+    assumption before deciding what to fund.
+  </p>
+  <div class="legend-items">
+    <div class="legend-item">
+      <span>🔧</span>
+      <span>Work is underway — the card carries its Jira ticket, owner, timeline and expected impact</span>
+    </div>
+    <div class="legend-item">
+      <span>🔵</span>
+      <span>In Progress — actively being built, team assigned</span>
+    </div>
+    <div class="legend-item">
+      <span>🟡</span>
+      <span>Planned — scheduled to start soon</span>
+    </div>
+    <div class="legend-item">
+      <span>✅</span>
+      <span>Launching Soon — ready or launching within a week</span>
+    </div>
+    <div class="legend-item">
+      <span>⬆️ ➡️ ⬇️</span>
+      <span>Priority — high, medium or low, shown on every card</span>
+    </div>
+  </div>
+
+  <div class="legend-title" style="margin-top: 18px;">Reading the GA Trends</div>
+  <p class="legend-note">
+    Each figure carries its movement against the previous four-week average. The
+    arrow shows which way the number went; the colour shows whether that is good
+    or bad news — so a falling bounce rate is green, while rising support contacts
+    are red. Hover any indicator for the exact change.
+  </p>
+  <div class="legend-items">
+    <div class="legend-item">
+      <span class="trend up good"><span class="trend-arrow" aria-hidden="true">▲</span>1.8pp</span>
+      <span>Rising, and that's an improvement</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend up bad"><span class="trend-arrow" aria-hidden="true">▲</span>4.1pp</span>
+      <span>Rising, and that's a problem</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend down good"><span class="trend-arrow" aria-hidden="true">▼</span>0.9pp</span>
+      <span>Falling, and that's an improvement</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend down bad"><span class="trend-arrow" aria-hidden="true">▼</span>3.2pp</span>
+      <span>Falling, and that's a problem</span>
+    </div>
+    <div class="legend-item">
+      <span class="trend flat neutral"><span class="trend-arrow" aria-hidden="true">–</span>flat</span>
+      <span>Holding steady within normal week-to-week noise</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- src/data/journey.js ---------- */
+// The eight journey stages, in order. `mood` drives both the emoji and the
+// height of the emotional curve — change it here and the curve redraws.
+const MOODS = {
+  "delighted": {
+    "y": 25,
+    "emoji": "😄",
+    "color": "#10b981",
+    "label": "Delighted"
+  },
+  "happy": {
+    "y": 41,
+    "emoji": "😊",
+    "color": "#10b981",
+    "label": "Happy"
+  },
+  "neutral": {
+    "y": 70,
+    "emoji": "😐",
+    "color": "#f59e0b",
+    "label": "Neutral"
+  },
+  "anxious": {
+    "y": 95,
+    "emoji": "😟",
+    "color": "#ef4444",
+    "label": "Anxious"
+  }
+};
+
+const STAGES = [
+  {
+    "id": "browse",
+    "name": "Browse Products",
+    "performance": "good",
+    "indicator": "68%",
+    "action": "Customer searches & browses products to find what they need",
+    "mood": "happy"
+  },
+  {
+    "id": "cart",
+    "name": "Add to Cart",
+    "performance": "excellent",
+    "indicator": "89%",
+    "action": "Customer selects items and adds them to their shopping cart",
+    "mood": "happy"
+  },
+  {
+    "id": "checkout",
+    "name": "Checkout",
+    "performance": "good",
+    "indicator": "75%",
+    "action": "Customer enters shipping address and reviews order details",
+    "mood": "neutral"
+  },
+  {
+    "id": "payment",
+    "name": "Payment",
+    "performance": "critical",
+    "indicator": "75%",
+    "action": "Customer enters payment information and confirms purchase",
+    "mood": "anxious"
+  },
+  {
+    "id": "confirm",
+    "name": "Confirmation",
+    "performance": "excellent",
+    "indicator": "98%",
+    "action": "Customer receives order confirmation and tracking info",
+    "mood": "delighted"
+  },
+  {
+    "id": "shipping",
+    "name": "Shipping",
+    "performance": "excellent",
+    "indicator": "99%",
+    "action": "Package is processed and in transit to customer's address",
+    "mood": "neutral"
+  },
+  {
+    "id": "delivery",
+    "name": "Delivery",
+    "performance": "excellent",
+    "indicator": "98%",
+    "action": "Package arrives and customer receives their order",
+    "mood": "happy"
+  },
+  {
+    "id": "support",
+    "name": "Post-Purchase Support",
+    "performance": "good",
+    "indicator": "End",
+    "action": "Customer seeks help, returns, or engages with loyalty program",
+    "mood": "neutral"
+  }
+];
+
+/* ---------- src/data/cards.js ---------- */
+// Every pain point and opportunity: what it means, and how it was measured.
+// CARD_ORDER controls which cards appear in which stage column, and in what
+// order. A card with a `ticket` shows the wrench badge and its initiative.
+const CARDS = {
+  "browse-selection": {
+    "stage": "browse",
+    "kind": "pain",
+    "title": "Overwhelming product selection",
+    "priority": "medium",
+    "meaning": "Shoppers landing on a category page face dozens of near-identical options with no obvious way to narrow them down, so they default to scrolling instead of deciding.",
+    "measurement": "Session recordings of 240 category visits showed a median of 3.8 full scroll cycles before any filter was touched. An exit-intent survey (n=412) returned “too many options to compare” as the leading reason for leaving, at 31%.",
+    "ticket": null
+  },
+  "browse-filters": {
+    "stage": "browse",
+    "kind": "pain",
+    "title": "Slow filters",
+    "priority": "medium",
+    "meaning": "Every filter change triggers a full page reload, so refining a search feels punishing and most shoppers stop after one attempt.",
+    "measurement": "GA4 custom timing on the filter endpoint averages 1.9s at p50 and 4.4s at p95. Only 18% of sessions apply a second filter after the first.",
+    "ticket": null
+  },
+  "browse-search": {
+    "stage": "browse",
+    "kind": "opportunity",
+    "title": "Better search",
+    "priority": "medium",
+    "meaning": "A search box that tolerates typos, understands synonyms and shows results as you type would let shoppers who already know what they want skip browsing altogether.",
+    "measurement": "Searchers convert at 3.1× the rate of browsers, but 22% of queries currently return nothing. Query-log analysis of 14,600 searches found 61% of those misses were spelling variants or synonyms already present in the catalogue.",
+    "ticket": null
+  },
+  "browse-recs": {
+    "stage": "browse",
+    "kind": "opportunity",
+    "title": "Personalized recommendations",
+    "priority": "low",
+    "meaning": "Surfacing items based on what a shopper viewed previously would shorten the path for returning visitors.",
+    "measurement": "Sized from a four-week holdout test on the homepage rail, which lifted click-through 12% but did not move revenue per session significantly (p=0.21). Held at low priority until that signal is clearer.",
+    "ticket": null
+  },
+  "browse-quickfilters": {
+    "stage": "browse",
+    "kind": "opportunity",
+    "title": "Quick filters",
+    "priority": "medium",
+    "meaning": "Exposing the three most-used filters as one-tap chips above the results removes the trip into the filter panel entirely.",
+    "measurement": "Filter-usage logs show price, size and colour account for 78% of all filter applications. Prototype tree-testing with 18 participants cut time-to-first-filter from 41s to 9s.",
+    "ticket": null
+  },
+  "cart-stock": {
+    "stage": "cart",
+    "kind": "pain",
+    "title": "Stock uncertainty",
+    "priority": "medium",
+    "meaning": "Availability is only checked after an item is added, so shoppers discover an out-of-stock size at the point they have already committed to it.",
+    "measurement": "6.2% of add-to-cart events are followed by a stock-failure error within 30 seconds. Support tags roughly 94 tickets a month to “it was available and then it wasn’t”.",
+    "ticket": null
+  },
+  "cart-sizing": {
+    "stage": "cart",
+    "kind": "pain",
+    "title": "No sizing guides",
+    "priority": "low",
+    "meaning": "With no garment measurements published, shoppers guess — which surfaces later as a return rather than as a drop-off here.",
+    "measurement": "41% of apparel returns cite “wrong size”, against a category benchmark of 30%. In moderated usability sessions (n=12), seven participants looked for a size chart and could not find one.",
+    "ticket": null
+  },
+  "cart-stock-indicators": {
+    "stage": "cart",
+    "kind": "opportunity",
+    "title": "Stock indicators",
+    "priority": "medium",
+    "meaning": "Showing per-variant availability on the listing itself prevents the dead end rather than reporting it.",
+    "measurement": "The inventory feed already carries variant-level counts, so this is a display change rather than a data project. Modelled directly against the 6.2% stock-failure rate.",
+    "ticket": null
+  },
+  "cart-size-tool": {
+    "stage": "cart",
+    "kind": "opportunity",
+    "title": "Size tool",
+    "priority": "low",
+    "meaning": "A guided fit finder that asks two or three questions and recommends a size.",
+    "measurement": "Vendor benchmarks claim a 20–30% reduction in size-related returns. Not yet validated against our own traffic, which is why this sits low.",
+    "ticket": null
+  },
+  "cart-reviews": {
+    "stage": "cart",
+    "kind": "opportunity",
+    "title": "Customer reviews",
+    "priority": "low",
+    "meaning": "Fit and quality commentary from other buyers answers the questions a spec sheet cannot.",
+    "measurement": "On-page surveys (n=289) found 44% of shoppers looked for reviews before adding an item. No first-party test has been run, so the effect size is unknown.",
+    "ticket": null
+  },
+  "checkout-form": {
+    "stage": "checkout",
+    "kind": "pain",
+    "title": "Form too long",
+    "priority": "high",
+    "meaning": "The shipping step asks for 14 fields across two screens, several of which the order does not need, so shoppers stall partway through.",
+    "measurement": "Field-level analytics show a median completion time of 3:40 on the shipping form alone, with 38% of abandonments occurring on the “address line 2” and “company” fields — both of which are optional.",
+    "ticket": "CHK-1428"
+  },
+  "checkout-steps": {
+    "stage": "checkout",
+    "kind": "pain",
+    "title": "Too many steps",
+    "priority": "high",
+    "meaning": "Five separate screens sit between cart and payment, each with its own page load, and nothing indicates how many remain.",
+    "measurement": "Funnel analysis shows a 4–7% drop at each of the five steps, compounding to 23% across the sequence. Replays of 180 abandonments show 61% left without scrolling, which points at the step count itself rather than the content.",
+    "ticket": "CHK-1503"
+  },
+  "checkout-fees": {
+    "stage": "checkout",
+    "kind": "pain",
+    "title": "Unexpected fees",
+    "priority": "medium",
+    "meaning": "Shipping and handling only appear on the final review screen, so the total the shopper agreed to in the cart is not the total they are asked to pay.",
+    "measurement": "Abandonment spikes to 14% on the screen where fees first appear, against 5% on adjacent screens. Exit survey (n=203) cites “cost more than expected” at 27%.",
+    "ticket": null
+  },
+  "checkout-onepage": {
+    "stage": "checkout",
+    "kind": "opportunity",
+    "title": "One-page checkout",
+    "priority": "high",
+    "meaning": "Collapsing the five steps into a single scrollable page with inline validation.",
+    "measurement": "Scoped against the per-step drop data above. The redesign tracked in CHK-1428 models conversion at 85%, up from 75%.",
+    "ticket": "CHK-1428"
+  },
+  "checkout-guest": {
+    "stage": "checkout",
+    "kind": "opportunity",
+    "title": "Guest checkout option",
+    "priority": "high",
+    "meaning": "Letting shoppers buy without creating an account removes the hardest ask in the flow.",
+    "measurement": "34% of abandonments occur on the account-creation prompt. Of the accounts that are created at checkout, 71% are never signed into again — so the account is not serving the customer either.",
+    "ticket": null
+  },
+  "checkout-total": {
+    "stage": "checkout",
+    "kind": "opportunity",
+    "title": "Show total early",
+    "priority": "medium",
+    "meaning": "Estimating shipping in the cart so the number never changes after the shopper has decided.",
+    "measurement": "Targets the 27% “cost more than expected” exit reason. Shipping rules are already deterministic by postcode, so an accurate estimate is available at cart time.",
+    "ticket": null
+  },
+  "checkout-autofill": {
+    "stage": "checkout",
+    "kind": "opportunity",
+    "title": "Auto-fill address",
+    "priority": "medium",
+    "meaning": "A postcode lookup that completes the address from two fields instead of six.",
+    "measurement": "Address fields account for 1:50 of the 3:40 median form time. Lookup providers quote sub-200ms responses for all of our markets.",
+    "ticket": null
+  },
+  "payment-security": {
+    "stage": "payment",
+    "kind": "pain",
+    "title": "Security concerns",
+    "priority": "high",
+    "meaning": "The payment page carries no visible trust signals and its styling differs from the rest of the site, so it reads as though the shopper has been handed off somewhere they should not trust.",
+    "measurement": "The highest bounce on the journey at 18%, and the only stage where bounce is still rising — up 4.1pp in four weeks. In first-click testing with 24 participants, nine paused to check the URL bar; verbatims include “looks different” and “is this still the real site”.",
+    "ticket": "PAY-0912"
+  },
+  "payment-options": {
+    "stage": "payment",
+    "kind": "pain",
+    "title": "Limited payment options",
+    "priority": "medium",
+    "meaning": "Card only. Shoppers who default to a wallet or a pay-later method have no route through this step at all.",
+    "measurement": "An exit survey on the payment step (n=156) returned “my payment method wasn’t offered” at 19%. Market data puts wallet share at 34% for our largest segment.",
+    "ticket": null
+  },
+  "payment-processing": {
+    "stage": "payment",
+    "kind": "pain",
+    "title": "Slow processing",
+    "priority": "medium",
+    "meaning": "The authorisation call can take several seconds with no progress feedback, so shoppers retry or leave believing it failed.",
+    "measurement": "Gateway latency is 6.1s at p95 against 1.4s at p50. 3.4% of orders show a duplicate submit attempt, concentrated almost entirely in sessions past the four-second mark.",
+    "ticket": null
+  },
+  "payment-trust": {
+    "stage": "payment",
+    "kind": "opportunity",
+    "title": "Trust badges",
+    "priority": "high",
+    "meaning": "SSL, fraud-protection and card-scheme marks placed where the shopper is deciding, plus page styling that matches the rest of the site.",
+    "measurement": "Scoped in PAY-0912 against the 18% bounce rate, with a projected reduction to 12%.",
+    "ticket": "PAY-0912"
+  },
+  "payment-methods": {
+    "stage": "payment",
+    "kind": "opportunity",
+    "title": "Multiple payment methods",
+    "priority": "medium",
+    "meaning": "Adding the wallet and pay-later options that shoppers asked for by name.",
+    "measurement": "Sized from the 19% “method not offered” exit-survey share and the 34% wallet benchmark for our main segment.",
+    "ticket": null
+  },
+  "payment-wallets": {
+    "stage": "payment",
+    "kind": "opportunity",
+    "title": "Apple/Google Pay",
+    "priority": "medium",
+    "meaning": "One-tap payment that also removes the address form for returning shoppers.",
+    "measurement": "58% of payment-step sessions are on mobile, where these wallets are already provisioned. Vendor case studies report 1.5–2× mobile conversion, which we have not validated here.",
+    "ticket": null
+  },
+  "confirm-details": {
+    "stage": "confirm",
+    "kind": "pain",
+    "title": "Unclear order details",
+    "priority": "medium",
+    "meaning": "The confirmation screen shows an order number and a total, but not what was bought, where it is going, or when to expect it.",
+    "measurement": "22% of support contacts within 24 hours of purchase ask what was ordered or where it is being sent. Every one of those is answerable at this screen.",
+    "ticket": null
+  },
+  "confirm-timeline": {
+    "stage": "confirm",
+    "kind": "pain",
+    "title": "No shipping timeline",
+    "priority": "medium",
+    "meaning": "No delivery estimate is given, so the shopper has no idea whether to expect the parcel in two days or two weeks.",
+    "measurement": "“When will it arrive” is the single largest contact reason in the 48 hours after purchase, at 31% of tickets. A carrier estimate is already available on the order at this point but is not displayed.",
+    "ticket": null
+  },
+  "confirm-summary": {
+    "stage": "confirm",
+    "kind": "opportunity",
+    "title": "Clear order summary",
+    "priority": "medium",
+    "meaning": "An itemised list, the delivery address and the payment method, both on screen and in the email.",
+    "measurement": "Targets the 22% “what did I order” contact volume. Every field needed is already on the order object.",
+    "ticket": null
+  },
+  "confirm-date": {
+    "stage": "confirm",
+    "kind": "opportunity",
+    "title": "Delivery date",
+    "priority": "high",
+    "meaning": "A concrete date, or a narrow range, rather than a shipping-speed label like “standard”.",
+    "measurement": "Targets the 31% “when will it arrive” contact volume — the largest single avoidable driver at this stage. The carrier API already returns a per-postcode estimate.",
+    "ticket": null
+  },
+  "confirm-tracking": {
+    "stage": "confirm",
+    "kind": "opportunity",
+    "title": "Tracking link",
+    "priority": "medium",
+    "meaning": "A link the shopper can return to, rather than a number to paste into a carrier’s site.",
+    "measurement": "14% of post-purchase sessions come back to look for order status, and 62% of those land on the wrong page first.",
+    "ticket": null
+  },
+  "confirm-email": {
+    "stage": "confirm",
+    "kind": "opportunity",
+    "title": "Confirmation email",
+    "priority": "low",
+    "meaning": "A durable copy of the order the shopper can find later without signing in.",
+    "measurement": "Already sent, but open tracking shows a 61% open rate and the mail contains no useful links — so this is a content fix rather than new work, hence the low priority.",
+    "ticket": null
+  },
+  "shipping-tracking": {
+    "stage": "shipping",
+    "kind": "pain",
+    "title": "No tracking updates",
+    "priority": "high",
+    "meaning": "Once a parcel leaves the warehouse the shopper hears nothing until it arrives, so the only way to find out where it is, is to ask us.",
+    "measurement": "1,180 “where is my order” contacts a month — 38% of all support volume. Carrier webhooks carrying this data were already available and simply not consumed.",
+    "ticket": "SHIP-0347"
+  },
+  "shipping-window": {
+    "stage": "shipping",
+    "kind": "pain",
+    "title": "No delivery window",
+    "priority": "high",
+    "meaning": "A whole-day delivery date with no time window means somebody has to be home all day, or the parcel is missed.",
+    "measurement": "11% of first delivery attempts fail, and 68% of those succeed on the next day’s retry — so the parcel was deliverable and the shopper simply wasn’t there.",
+    "ticket": null
+  },
+  "shipping-sms": {
+    "stage": "shipping",
+    "kind": "pain",
+    "title": "No SMS notifications",
+    "priority": "high",
+    "meaning": "Status updates go to email only, which shoppers do not check in the narrow window where the information still matters.",
+    "measurement": "Shipping email open rate is 61%, against the 98% read rates typical of transactional SMS. Of the failed deliveries above, 74% had an unopened “out for delivery” email.",
+    "ticket": "SHIP-0412"
+  },
+  "shipping-realtime": {
+    "stage": "shipping",
+    "kind": "opportunity",
+    "title": "Real-time tracking",
+    "priority": "high",
+    "meaning": "A live map and status page the shopper can open at any time without contacting anyone.",
+    "measurement": "Scoped in SHIP-0347 against the 1,180 monthly contacts, with a projected support saving of $8K a month.",
+    "ticket": "SHIP-0347"
+  },
+  "shipping-alerts": {
+    "stage": "shipping",
+    "kind": "opportunity",
+    "title": "SMS/email updates",
+    "priority": "high",
+    "meaning": "Opt-in alerts at dispatch, out for delivery and delivered.",
+    "measurement": "Scoped in SHIP-0412, targeting 35% opt-in and a 12% reduction in support volume.",
+    "ticket": "SHIP-0412"
+  },
+  "shipping-2hr": {
+    "stage": "shipping",
+    "kind": "opportunity",
+    "title": "2-hour delivery window",
+    "priority": "medium",
+    "meaning": "A narrow slot, communicated on the morning of delivery.",
+    "measurement": "Modelled against the 11% failed-attempt rate, where each failure costs roughly $6 in redelivery. The carrier supports windowing in three of our five regions today.",
+    "ticket": null
+  },
+  "delivery-damage": {
+    "stage": "delivery",
+    "kind": "pain",
+    "title": "Damaged packaging",
+    "priority": "medium",
+    "meaning": "Parcels arrive crushed or already open, which turns a completed purchase into a return even when the product inside is fine.",
+    "measurement": "2.1% of deliveries generate a damage report. Photo evidence across 340 claims showed 71% were outer-carton failures on multi-item orders rather than product faults.",
+    "ticket": null
+  },
+  "delivery-wrong": {
+    "stage": "delivery",
+    "kind": "pain",
+    "title": "Wrong item",
+    "priority": "high",
+    "meaning": "The shopper receives something other than what they ordered, which costs them a return trip and costs us the margin twice.",
+    "measurement": "0.9% mis-pick rate, traced in a warehouse audit to four SKU pairs with near-identical packaging. Each incident averages $34 in return shipping and restocking.",
+    "ticket": null
+  },
+  "delivery-missed": {
+    "stage": "delivery",
+    "kind": "pain",
+    "title": "Missed delivery",
+    "priority": "medium",
+    "meaning": "Nobody home and no safe place, so the parcel returns to the depot and the shopper has to chase it.",
+    "measurement": "The same 11% first-attempt failure rate measured at the shipping stage. 19% of those parcels are never successfully redelivered at all.",
+    "ticket": null
+  },
+  "delivery-proof": {
+    "stage": "delivery",
+    "kind": "opportunity",
+    "title": "Proof of delivery",
+    "priority": "medium",
+    "meaning": "A timestamped photo and location, so “it never arrived” can be settled without a claim process.",
+    "measurement": "27% of damage and non-delivery claims are currently unresolvable in either direction. The carrier already captures photos in two regions but does not pass them through to us.",
+    "ticket": null
+  },
+  "delivery-returns": {
+    "stage": "delivery",
+    "kind": "opportunity",
+    "title": "Easy returns",
+    "priority": "high",
+    "meaning": "A prepaid label and a drop-off point, generated from the order without a support conversation.",
+    "measurement": "Returns currently take a median of two support touches to initiate. 48% of CSAT verbatims scoring below three stars mention the returns process rather than the product.",
+    "ticket": null
+  },
+  "delivery-whiteglove": {
+    "stage": "delivery",
+    "kind": "opportunity",
+    "title": "White-glove service",
+    "priority": "low",
+    "meaning": "Scheduled delivery with unpacking and installation for large items.",
+    "measurement": "Applies to 3% of order volume by unit but 18% by revenue. No pilot has run and the sizing rests on vendor quotes alone, which is why it stays low.",
+    "ticket": null
+  },
+  "support-findability": {
+    "stage": "support",
+    "kind": "pain",
+    "title": "Hard to find support",
+    "priority": "high",
+    "meaning": "The contact route sits three clicks deep in the footer, so shoppers who need help either give up or arrive through a channel nobody staffs.",
+    "measurement": "Tree-testing with 22 participants: nine failed to find the contact page within 60 seconds. 31% of inbound contacts now arrive via social DMs, which carry no SLA.",
+    "ticket": null
+  },
+  "support-speed": {
+    "stage": "support",
+    "kind": "pain",
+    "title": "Slow responses",
+    "priority": "high",
+    "meaning": "First response takes long enough that shoppers contact again through a second channel before hearing back, which inflates the queue they are waiting in.",
+    "measurement": "Median first response is 19 hours against a 4-hour target. 23% of tickets have a duplicate from the same customer inside that window.",
+    "ticket": null
+  },
+  "support-selfservice": {
+    "stage": "support",
+    "kind": "pain",
+    "title": "No self-service",
+    "priority": "medium",
+    "meaning": "Routine requests — track an order, start a return, change an address — all require a person, so the queue is full of work that never needed one.",
+    "measurement": "Contact-reason tagging shows 58% of tickets are one of those three requests. Handling time averages seven minutes per ticket.",
+    "ticket": null
+  },
+  "support-chat": {
+    "stage": "support",
+    "kind": "opportunity",
+    "title": "24/7 chat support",
+    "priority": "high",
+    "meaning": "A staffed or hybrid chat channel available outside business hours.",
+    "measurement": "44% of contact attempts fall outside the 9–5 staffed window, and those tickets wait a median of 31 hours for a first response against 11 hours in-hours.",
+    "ticket": null
+  },
+  "support-ai": {
+    "stage": "support",
+    "kind": "opportunity",
+    "title": "AI assistant",
+    "priority": "medium",
+    "meaning": "Automated handling of the routine requests above, with a clean handoff to a person when it cannot help.",
+    "measurement": "Scoped against the 58% self-service-eligible volume, assuming 60% containment — an assumption not yet validated against our actual ticket mix.",
+    "ticket": null
+  },
+  "support-returns": {
+    "stage": "support",
+    "kind": "opportunity",
+    "title": "Easy returns",
+    "priority": "high",
+    "meaning": "The same self-service returns flow proposed at delivery, reachable from order history.",
+    "measurement": "Shares the two-touch measurement from the delivery stage. Returns are 21% of total ticket volume at this stage.",
+    "ticket": null
+  },
+  "support-loyalty": {
+    "stage": "support",
+    "kind": "opportunity",
+    "title": "Loyalty program",
+    "priority": "low",
+    "meaning": "Rewards for repeat purchase, so the support relationship feeds retention instead of reading purely as cost.",
+    "measurement": "Repeat-purchase rate is 28% within 12 months. No test has run — this is listed to keep it visible, not because it is sized.",
+    "ticket": null
+  }
+};
+
+const CARD_ORDER = {
+  "browse": {
+    "pain": [
+      "browse-selection",
+      "browse-filters"
+    ],
+    "opportunity": [
+      "browse-search",
+      "browse-recs",
+      "browse-quickfilters"
+    ]
+  },
+  "cart": {
+    "pain": [
+      "cart-stock",
+      "cart-sizing"
+    ],
+    "opportunity": [
+      "cart-stock-indicators",
+      "cart-size-tool",
+      "cart-reviews"
+    ]
+  },
+  "checkout": {
+    "pain": [
+      "checkout-form",
+      "checkout-steps",
+      "checkout-fees"
+    ],
+    "opportunity": [
+      "checkout-onepage",
+      "checkout-guest",
+      "checkout-total",
+      "checkout-autofill"
+    ]
+  },
+  "payment": {
+    "pain": [
+      "payment-security",
+      "payment-options",
+      "payment-processing"
+    ],
+    "opportunity": [
+      "payment-trust",
+      "payment-methods",
+      "payment-wallets"
+    ]
+  },
+  "confirm": {
+    "pain": [
+      "confirm-details",
+      "confirm-timeline"
+    ],
+    "opportunity": [
+      "confirm-summary",
+      "confirm-date",
+      "confirm-tracking",
+      "confirm-email"
+    ]
+  },
+  "shipping": {
+    "pain": [
+      "shipping-tracking",
+      "shipping-window",
+      "shipping-sms"
+    ],
+    "opportunity": [
+      "shipping-realtime",
+      "shipping-alerts",
+      "shipping-2hr"
+    ]
+  },
+  "delivery": {
+    "pain": [
+      "delivery-damage",
+      "delivery-wrong",
+      "delivery-missed"
+    ],
+    "opportunity": [
+      "delivery-proof",
+      "delivery-returns",
+      "delivery-whiteglove"
+    ]
+  },
+  "support": {
+    "pain": [
+      "support-findability",
+      "support-speed",
+      "support-selfservice"
+    ],
+    "opportunity": [
+      "support-chat",
+      "support-ai",
+      "support-returns",
+      "support-loyalty"
+    ]
+  }
+};
+
+/* ---------- src/data/initiatives.js ---------- */
+// Active work, keyed by Jira ticket. Referenced from cards.js via `ticket`.
+const INITIATIVES = {
+  "CHK-1428": {
+    "name": "One-Page Checkout Redesign",
+    "status": "in-progress",
+    "status_label": "In progress",
+    "owner": "Frontend Team (Alex Chen)",
+    "progress": 40,
+    "timeline": "Started Jan 15 &middot; Launch Feb 15",
+    "impact": [
+      [
+        "Conversion now",
+        "75%"
+      ],
+      [
+        "Projected",
+        "85% (+10pp)"
+      ]
+    ],
+    "note": "On track, no blockers. Next milestone: design review, Feb 1."
+  },
+  "CHK-1503": {
+    "name": "Streamlined Checkout Flow",
+    "status": "planned",
+    "status_label": "Planned",
+    "owner": "UX Team (Maya Patel)",
+    "progress": null,
+    "timeline": "Starts Feb 1 &middot; Launch Mar 15",
+    "impact": [
+      [
+        "Time saved",
+        "-2:24"
+      ],
+      [
+        "Conversion lift",
+        "+8pp"
+      ]
+    ],
+    "note": "Reduces checkout from five steps to two or three by combining shipping and billing."
+  },
+  "PAY-0912": {
+    "name": "Trust Badge Implementation",
+    "status": "in-progress",
+    "status_label": "In progress",
+    "owner": "Backend Team (Sarah Johnson)",
+    "progress": 65,
+    "timeline": "Started Jan 8 &middot; Launch Jan 25",
+    "impact": [
+      [
+        "Bounce now",
+        "18%"
+      ],
+      [
+        "Projected",
+        "12% (-6pp)"
+      ]
+    ],
+    "note": "Adds SSL and fraud-protection marks plus card-scheme icons, and aligns the page styling with the rest of the site."
+  },
+  "SHIP-0347": {
+    "name": "Real-Time Tracking Dashboard",
+    "status": "launching",
+    "status_label": "Launching soon",
+    "owner": "Logistics Team (James Park)",
+    "progress": 90,
+    "timeline": "Started Dec 1 &middot; Launch Jan 22",
+    "impact": [
+      [
+        "Support tickets",
+        "1,180/mo"
+      ],
+      [
+        "Projected saving",
+        "$8K/mo"
+      ]
+    ],
+    "note": "Live GPS tracking with carrier integration and status updates every 30 minutes."
+  },
+  "SHIP-0412": {
+    "name": "SMS Notification System",
+    "status": "planned",
+    "status_label": "Planned",
+    "owner": "Growth Team (Nina Chen)",
+    "progress": null,
+    "timeline": "Starts Feb 1 &middot; Launch Mar 1",
+    "impact": [
+      [
+        "Adoption target",
+        "35% opt-in"
+      ],
+      [
+        "Support reduction",
+        "-12%"
+      ]
+    ],
+    "note": "Opt-in alerts for shipped, out for delivery and delivered, with per-user preferences."
+  }
+};
+
+/* ---------- src/data/metrics.js ---------- */
+// GA figures per stage, with their movement against the previous four-week
+// average. `direction` is which way the number moved; `sentiment` is whether
+// that movement is good or bad news — they are deliberately independent,
+// because rising bounce is bad while rising conversion is good.
+const METRICS = {
+  "browse": [
+    {
+      "label": "Users",
+      "value": "10,000",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "6.2%",
+      "sentiment": "good",
+      "note": "more sessions reaching the catalogue"
+    },
+    {
+      "label": "Conversion",
+      "value": "68%",
+      "valueClass": "good",
+      "direction": "up",
+      "delta": "1.8pp",
+      "sentiment": "good",
+      "note": ""
+    },
+    {
+      "label": "Bounce",
+      "value": "8%",
+      "valueClass": "good",
+      "direction": "down",
+      "delta": "0.9pp",
+      "sentiment": "good",
+      "note": ""
+    },
+    {
+      "label": "Time",
+      "value": "4:32",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "12s",
+      "sentiment": "neutral",
+      "note": "longer browsing reads as engagement, not friction"
+    }
+  ],
+  "cart": [
+    {
+      "label": "Users",
+      "value": "6,800",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "4.1%",
+      "sentiment": "good",
+      "note": ""
+    },
+    {
+      "label": "Conversion",
+      "value": "89%",
+      "valueClass": "excellent",
+      "direction": "flat",
+      "delta": "0.2pp",
+      "sentiment": "neutral",
+      "note": ""
+    },
+    {
+      "label": "Bounce",
+      "value": "2%",
+      "valueClass": "excellent",
+      "direction": "flat",
+      "delta": "0.0pp",
+      "sentiment": "neutral",
+      "note": ""
+    },
+    {
+      "label": "Time",
+      "value": "2:15",
+      "valueClass": "",
+      "direction": "down",
+      "delta": "8s",
+      "sentiment": "good",
+      "note": "faster to add an item"
+    }
+  ],
+  "checkout": [
+    {
+      "label": "Users",
+      "value": "6,052",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "3.4%",
+      "sentiment": "good",
+      "note": ""
+    },
+    {
+      "label": "Conversion",
+      "value": "75%",
+      "valueClass": "good",
+      "direction": "down",
+      "delta": "1.1pp",
+      "sentiment": "bad",
+      "note": "still slipping while the one-page redesign is in build"
+    },
+    {
+      "label": "Bounce",
+      "value": "12%",
+      "valueClass": "caution",
+      "direction": "up",
+      "delta": "1.4pp",
+      "sentiment": "bad",
+      "note": ""
+    },
+    {
+      "label": "Time",
+      "value": "6:44",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "22s",
+      "sentiment": "bad",
+      "note": "the form is taking longer, matching the reported pain"
+    }
+  ],
+  "payment": [
+    {
+      "label": "Users",
+      "value": "4,539",
+      "valueClass": "",
+      "direction": "down",
+      "delta": "2.8%",
+      "sentiment": "bad",
+      "note": "fewer shoppers arriving from checkout"
+    },
+    {
+      "label": "Conversion",
+      "value": "75%",
+      "valueClass": "caution",
+      "direction": "down",
+      "delta": "3.2pp",
+      "sentiment": "bad",
+      "note": ""
+    },
+    {
+      "label": "Bounce",
+      "value": "18%",
+      "valueClass": "critical",
+      "direction": "up",
+      "delta": "4.1pp",
+      "sentiment": "bad",
+      "note": "the steepest move anywhere on the journey"
+    },
+    {
+      "label": "Time",
+      "value": "3:12",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "18s",
+      "sentiment": "bad",
+      "note": ""
+    }
+  ],
+  "confirm": [
+    {
+      "label": "Users",
+      "value": "4,085",
+      "valueClass": "",
+      "direction": "down",
+      "delta": "1.9%",
+      "sentiment": "bad",
+      "note": "knock-on from the payment drop-off"
+    },
+    {
+      "label": "Conversion",
+      "value": "98%",
+      "valueClass": "excellent",
+      "direction": "flat",
+      "delta": "0.1pp",
+      "sentiment": "neutral",
+      "note": ""
+    },
+    {
+      "label": "Bounce",
+      "value": "1%",
+      "valueClass": "excellent",
+      "direction": "flat",
+      "delta": "0.0pp",
+      "sentiment": "neutral",
+      "note": ""
+    },
+    {
+      "label": "Time",
+      "value": "1:05",
+      "valueClass": "",
+      "direction": "flat",
+      "delta": "2s",
+      "sentiment": "neutral",
+      "note": ""
+    }
+  ],
+  "shipping": [
+    {
+      "label": "Users",
+      "value": "4,003",
+      "valueClass": "",
+      "direction": "down",
+      "delta": "1.7%",
+      "sentiment": "bad",
+      "note": "knock-on from the payment drop-off"
+    },
+    {
+      "label": "Conversion",
+      "value": "99%",
+      "valueClass": "excellent",
+      "direction": "flat",
+      "delta": "0.0pp",
+      "sentiment": "neutral",
+      "note": ""
+    },
+    {
+      "label": "Bounce",
+      "value": "0.5%",
+      "valueClass": "excellent",
+      "direction": "flat",
+      "delta": "0.0pp",
+      "sentiment": "neutral",
+      "note": ""
+    },
+    {
+      "label": "Time",
+      "value": "0:30",
+      "valueClass": "",
+      "direction": "flat",
+      "delta": "1s",
+      "sentiment": "neutral",
+      "note": ""
+    }
+  ],
+  "delivery": [
+    {
+      "label": "Users",
+      "value": "3,963",
+      "valueClass": "",
+      "direction": "down",
+      "delta": "1.5%",
+      "sentiment": "bad",
+      "note": "knock-on from the payment drop-off"
+    },
+    {
+      "label": "Conversion",
+      "value": "98%",
+      "valueClass": "excellent",
+      "direction": "flat",
+      "delta": "0.2pp",
+      "sentiment": "neutral",
+      "note": ""
+    },
+    {
+      "label": "Bounce",
+      "value": "2%",
+      "valueClass": "good",
+      "direction": "down",
+      "delta": "0.4pp",
+      "sentiment": "good",
+      "note": ""
+    },
+    {
+      "label": "Time",
+      "value": "0:45",
+      "valueClass": "",
+      "direction": "flat",
+      "delta": "1s",
+      "sentiment": "neutral",
+      "note": ""
+    }
+  ],
+  "support": [
+    {
+      "label": "Users",
+      "value": "3,884",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "7.3%",
+      "sentiment": "bad",
+      "note": "rising contact volume, mostly payment and tracking queries"
+    },
+    {
+      "label": "Engagement",
+      "value": "42% reach",
+      "valueClass": "caution",
+      "direction": "up",
+      "delta": "3.1pp",
+      "sentiment": "good",
+      "note": "self-service content is reaching more people"
+    },
+    {
+      "label": "Bounce",
+      "value": "5%",
+      "valueClass": "caution",
+      "direction": "down",
+      "delta": "0.6pp",
+      "sentiment": "good",
+      "note": ""
+    },
+    {
+      "label": "Time",
+      "value": "2:08",
+      "valueClass": "",
+      "direction": "up",
+      "delta": "14s",
+      "sentiment": "bad",
+      "note": "responses are slowing as volume climbs"
+    }
+  ]
+};
+
+const COMPARISON_WINDOW = '4-week trend';
+
+/* ---------- src/render.js ---------- */
+// Builds the journey grid from the data modules. Nothing about the map is
+// hand-written markup, so editing a data file is enough to change the page.
+
+
+
+const COLUMN_WIDTH = 280;
+const CURVE_HEIGHT = 140;
+
+const PRIORITY_ARROW = { high: '⬆️', medium: '➡️', low: '⬇️' };
+const TREND_ARROW = { up: '▲', down: '▼', flat: '–' };
+const TREND_WORD = { up: 'up', down: 'down', flat: 'no change' };
+
+function el(tag, cls, text) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function svg(tag, attrs) {
+  const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k, v] of Object.entries(attrs || {})) node.setAttribute(k, v);
+  return node;
+}
+
+/** Horizontal centre of a stage column, in curve coordinates. */
+function columnCentre(index) {
+  return COLUMN_WIDTH / 2 + index * COLUMN_WIDTH;
+}
+
+/**
+ * Smooth cubic path through one point per stage, with a horizontal tangent at
+ * each point so the curve reads as a settled mood rather than a spike. Runs in
+ * from the left edge and out past the last stage.
+ */
+function moodPath(points, totalWidth) {
+  const reach = COLUMN_WIDTH / 3;
+  let d = `M 0 ${points[0].y} L ${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1];
+    const b = points[i];
+    d += ` C ${a.x + reach} ${a.y}, ${b.x - reach} ${b.y}, ${b.x} ${b.y}`;
+  }
+  const last = points[points.length - 1];
+  return d + ` L ${totalWidth} ${last.y}`;
+}
+
+function stageHeaders(grid) {
+  STAGES.forEach(stage => {
+    const header = el('div', `stage-header ${stage.performance}`);
+    header.appendChild(document.createTextNode(stage.name));
+    header.appendChild(el('div', 'performance-indicator', stage.indicator));
+    grid.appendChild(header);
+  });
+}
+
+function actionRow(grid) {
+  STAGES.forEach(stage => {
+    const lane = el('div', 'swimlane');
+    lane.appendChild(el('div', 'swimlane-label', 'Action'));
+    lane.appendChild(el('div', 'action-text', stage.action));
+    grid.appendChild(lane);
+  });
+}
+
+function feelingRow(grid) {
+  const totalWidth = STAGES.length * COLUMN_WIDTH;
+  const points = STAGES.map((stage, i) => ({
+    x: columnCentre(i),
+    y: MOODS[stage.mood].y,
+    mood: MOODS[stage.mood],
+    stage,
+  }));
+
+  const row = el('div', 'feeling-journey-row');
+  const chart = svg('svg', {
+    viewBox: `0 0 ${totalWidth} ${CURVE_HEIGHT}`,
+    preserveAspectRatio: 'none',
+    role: 'img',
+    'aria-label':
+      'Emotional journey across the eight stages: ' +
+      points.map(p => `${p.stage.name} — ${p.mood.label.toLowerCase()}`).join(', ') + '.',
+  });
+
+  const defs = svg('defs');
+  const gradient = svg('linearGradient', {
+    id: 'moodGradient', x1: '0%', y1: '0%', x2: '0%', y2: '100%',
+  });
+  gradient.appendChild(svg('stop', { offset: '0%', 'stop-color': '#3b82f6', 'stop-opacity': '0.15' }));
+  gradient.appendChild(svg('stop', { offset: '100%', 'stop-color': '#3b82f6', 'stop-opacity': '0' }));
+  defs.appendChild(gradient);
+  chart.appendChild(defs);
+
+  const line = moodPath(points, totalWidth);
+
+  chart.appendChild(svg('path', {
+    d: `${line} L ${totalWidth} ${CURVE_HEIGHT} L 0 ${CURVE_HEIGHT} Z`,
+    fill: 'url(#moodGradient)',
+  }));
+  chart.appendChild(svg('path', {
+    d: line, stroke: '#3b82f6', 'stroke-width': '3',
+    fill: 'none', 'stroke-linecap': 'round',
+  }));
+
+  points.forEach(point => {
+    chart.appendChild(svg('circle', {
+      cx: point.x, cy: point.y, r: '6',
+      fill: point.mood.color, stroke: 'var(--surface)', 'stroke-width': '2',
+    }));
+    const face = svg('text', {
+      x: point.x, y: CURVE_HEIGHT - 12,
+      'text-anchor': 'middle', 'font-size': '18',
+    });
+    face.textContent = point.mood.emoji;
+    chart.appendChild(face);
+  });
+
+  row.appendChild(chart);
+  grid.appendChild(row);
+}
+
+function cardElement(id) {
+  const card = CARDS[id];
+  const base = card.kind === 'pain' ? 'pain-point' : 'opportunity';
+  const node = el('div', card.ticket ? `${base} has-initiative` : base);
+  node.dataset.card = id;
+  node.setAttribute('role', 'button');
+  node.tabIndex = 0;
+
+  node.appendChild(el('span', null, card.title));
+
+  const icons = el('span', 'card-icons');
+  if (card.ticket) {
+    const wrench = el('span', 'initiative-badge', '🔧');
+    wrench.setAttribute('aria-hidden', 'true');
+    icons.appendChild(wrench);
+  }
+  const priority = el('span', `priority-badge priority-${card.priority}`, PRIORITY_ARROW[card.priority]);
+  priority.setAttribute('aria-hidden', 'true');
+  icons.appendChild(priority);
+  node.appendChild(icons);
+
+  return node;
+}
+
+function cardRow(grid, kind, label, containerClass) {
+  STAGES.forEach(stage => {
+    const lane = el('div', 'swimlane');
+    lane.appendChild(el('div', 'swimlane-label', label));
+    const container = el('div', containerClass);
+    (CARD_ORDER[stage.id][kind] || []).forEach(id => container.appendChild(cardElement(id)));
+    lane.appendChild(container);
+    grid.appendChild(lane);
+  });
+}
+
+function metricsRow(grid) {
+  STAGES.forEach(stage => {
+    const lane = el('div', 'swimlane metrics');
+
+    const label = el('div', 'swimlane-label');
+    label.appendChild(document.createTextNode('GA '));
+    label.appendChild(el('span', 'swimlane-note', COMPARISON_WINDOW));
+    lane.appendChild(label);
+
+    const rows = el('div', 'metric-row');
+    (METRICS[stage.id] || []).forEach(metric => {
+      const item = el('div', 'metric-item');
+      item.appendChild(el('span', 'metric-label', metric.label));
+      item.appendChild(el(
+        'span',
+        metric.valueClass ? `metric-value ${metric.valueClass}` : 'metric-value',
+        metric.value,
+      ));
+
+      let tip = `${metric.label}: ${TREND_WORD[metric.direction]} ${metric.delta} `
+        + 'vs the previous 4-week average';
+      if (metric.note) tip += ` — ${metric.note}`;
+
+      const trend = el('span', `trend ${metric.direction} ${metric.sentiment}`);
+      trend.title = tip;
+      trend.setAttribute('aria-label', tip);
+      const arrow = el('span', 'trend-arrow', TREND_ARROW[metric.direction]);
+      arrow.setAttribute('aria-hidden', 'true');
+      trend.appendChild(arrow);
+      trend.appendChild(document.createTextNode(
+        metric.direction === 'flat' ? 'flat' : metric.delta,
+      ));
+      item.appendChild(trend);
+
+      rows.appendChild(item);
+    });
+    lane.appendChild(rows);
+    grid.appendChild(lane);
+  });
+}
+
+function renderJourney(mount) {
+  const grid = el('div', 'journey-grid');
+  grid.style.gridTemplateColumns = `repeat(${STAGES.length}, ${COLUMN_WIDTH}px)`;
+
+  stageHeaders(grid);
+  actionRow(grid);
+  feelingRow(grid);
+  cardRow(grid, 'pain', 'Pain Points', 'pain-points-container');
+  cardRow(grid, 'opportunity', 'Opportunities', 'opportunities-container');
+  metricsRow(grid);
+
+  mount.textContent = '';
+  mount.appendChild(grid);
+  return grid;
+}
+
+/* ---------- src/app.js ---------- */
+// Interaction layer: the card detail modal, ticket copying and keyboard access.
+
+
+
+
+const KIND_LABEL = { pain: 'Pain point', opportunity: 'Opportunity' };
+const PRIORITY_LABEL = { high: 'High priority', medium: 'Medium priority', low: 'Low priority' };
+const STAGE_NAME = Object.fromEntries(STAGES.map(s => [s.id, s.name]));
+
+let lastFocused = null;
+
+function el(tag, cls, text) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function section(label, value) {
+  const wrap = el('div', 'info-section');
+  wrap.appendChild(el('div', 'info-label', label));
+  wrap.appendChild(el('div', 'info-value', value));
+  return wrap;
+}
+
+function ticketButton(key) {
+  const button = el('button', 'ticket-key');
+  button.type = 'button';
+  button.dataset.key = key;
+  button.title = `Copy ${key} to the clipboard`;
+  button.addEventListener('click', () => copyTicket(button));
+  button.appendChild(el('span', 'ticket-key-system', 'Jira'));
+  button.appendChild(el('span', 'ticket-key-id', key));
+  return button;
+}
+
+function initiativeBlock(ticketKey, init) {
+  const wrap = el('div', 'initiative-block');
+
+  const head = el('div', 'initiative-block-head');
+  head.appendChild(el('span', `status-badge ${init.status}`, init.status_label));
+  head.appendChild(ticketButton(ticketKey));
+  wrap.appendChild(head);
+
+  wrap.appendChild(section('Initiative', init.name));
+  wrap.appendChild(section('Owner', init.owner));
+
+  if (init.progress !== null && init.progress !== undefined) {
+    const progress = el('div', 'info-section');
+    progress.appendChild(el('div', 'info-label', 'Progress'));
+    const bar = el('div', 'progress-bar');
+    const fill = el('div', 'progress-fill');
+    fill.style.width = `${init.progress}%`;
+    bar.appendChild(fill);
+    progress.appendChild(bar);
+    progress.appendChild(el('div', 'info-value', `${init.progress}% complete`));
+    wrap.appendChild(progress);
+  }
+
+  wrap.appendChild(section('Timeline', init.timeline.replace(/&middot;/g, '·')));
+
+  const impact = el('div', 'info-section');
+  impact.appendChild(el('div', 'info-label', 'Expected impact'));
+  const box = el('div', 'impact-box');
+  init.impact.forEach(([caption, figure]) => {
+    const item = el('div', 'impact-item');
+    item.appendChild(el('div', 'impact-current', caption));
+    item.appendChild(el('div', 'impact-projected', figure));
+    box.appendChild(item);
+  });
+  impact.appendChild(box);
+  wrap.appendChild(impact);
+
+  if (init.note) wrap.appendChild(section('Notes', init.note));
+  return wrap;
+}
+
+function openCard(id) {
+  const card = CARDS[id];
+  if (!card) return;
+
+  document.getElementById('card-modal-title').textContent = card.title;
+
+  const kind = document.getElementById('card-modal-kind');
+  kind.className = `card-kind ${card.kind}`;
+  kind.textContent = KIND_LABEL[card.kind];
+
+  const meta = document.getElementById('card-modal-meta');
+  meta.textContent = '';
+  meta.appendChild(el('span', 'modal-meta-item', STAGE_NAME[card.stage] || card.stage));
+  meta.appendChild(el('span', 'modal-meta-sep', '·'));
+  meta.appendChild(el('span', 'modal-meta-item', PRIORITY_LABEL[card.priority]));
+
+  const body = document.getElementById('card-modal-body');
+  body.textContent = '';
+  body.appendChild(section('What this means', card.meaning));
+  body.appendChild(section('How we measured it', card.measurement));
+
+  if (card.ticket && INITIATIVES[card.ticket]) {
+    body.appendChild(initiativeBlock(card.ticket, INITIATIVES[card.ticket]));
+  } else {
+    const none = el('div', 'info-section');
+    none.appendChild(el('div', 'info-label', 'Work underway'));
+    none.appendChild(el('div', 'info-value no-initiative',
+      'Nothing scheduled yet — this one sits in the backlog.'));
+    body.appendChild(none);
+  }
+
+  lastFocused = document.activeElement;
+  document.getElementById('card-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('card-modal-close').focus();
+}
+
+function closeCard() {
+  document.getElementById('card-modal').classList.remove('active');
+  document.body.style.overflow = 'auto';
+  if (lastFocused && lastFocused.focus) lastFocused.focus();
+  lastFocused = null;
+}
+
+function copyTicket(button) {
+  const key = button.dataset.key;
+  const idEl = button.querySelector('.ticket-key-id');
+
+  const confirmCopy = () => {
+    idEl.textContent = 'Copied';
+    button.classList.add('copied');
+    clearTimeout(button._resetTimer);
+    button._resetTimer = setTimeout(() => {
+      idEl.textContent = key;
+      button.classList.remove('copied');
+    }, 1400);
+  };
+
+  // Clipboard access can be denied in a sandboxed frame, so fall back to a
+  // hidden textarea, and finally to selecting the text for a manual copy.
+  const fallback = () => legacyCopy(key, confirmCopy, () => selectText(idEl));
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(key).then(confirmCopy, fallback);
+  } else {
+    fallback();
+  }
+}
+
+function legacyCopy(text, onSuccess, onFailure) {
+  try {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.top = '-1000px';
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(area);
+    ok ? onSuccess() : onFailure();
+  } catch (error) {
+    onFailure();
+  }
+}
+
+function selectText(node) {
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  } catch (error) {
+    /* nothing more we can do */
+  }
+}
+
+function wireEvents() {
+  // One delegated listener covers every card, however many the data defines.
+  document.addEventListener('click', event => {
+    const card = event.target.closest('[data-card]');
+    if (card) {
+      openCard(card.dataset.card);
+      return;
+    }
+    if (event.target.id === 'card-modal' || event.target.id === 'card-modal-close') closeCard();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeCard();
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      const card = event.target.closest && event.target.closest('[data-card]');
+      if (card) {
+        event.preventDefault();
+        openCard(card.dataset.card);
+      }
+    }
+  });
+}
+
+function start() {
+  renderJourney(document.getElementById('journey-mount'));
+  wireEvents();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', start);
+} else {
+  start();
+}
+
+// Exposed for the browser console and for tests.
+window.CARDS = CARDS;
+window.INITIATIVES = INITIATIVES;
+window.openCard = openCard;
+window.closeCard = closeCard;
+window.copyTicket = copyTicket;
+</script>
