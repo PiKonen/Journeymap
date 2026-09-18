@@ -9,7 +9,7 @@
     "dev": "python3 -m http.server -d src 8000"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "license": "MIT"
 }
